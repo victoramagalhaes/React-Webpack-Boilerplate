@@ -1,4 +1,6 @@
 var config = require("./webpack.config.js");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: "./src/index.jsx",
@@ -11,7 +13,8 @@ module.exports = {
         contentBase: __dirname + "/public",
         inline: true,
         hot:true,
-        watchContentBase: true
+        watchContentBase: true,
+        port:3000
     },
     performance: {
         hints: process.env.NODE_ENV === 'production' ? "warning" : false
@@ -45,10 +48,28 @@ module.exports = {
                                 quality:65
                             }
                         }
-                    }
+                    },
                 ]
-
-            }
+            },
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract(
+                  {
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'sass-loader']
+                  })
+              }
         ]
-    }
+    },
+    plugins: [ 
+        new ExtractTextPlugin(
+          {filename: 'app.css'}
+        ),
+        new HtmlWebpackPlugin({
+          inject: false,
+          hash: true,
+          template: './src/index.html',
+          filename: 'index.html'
+        })
+      ]
 };
