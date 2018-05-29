@@ -1,11 +1,17 @@
 $full:100%;
+html{
+    height:$full
+}
 body{
     width:$full;
     height:$full;
     margin:0px;
+    padding:0px;
     background-image:url('../images/i.png');
-    background-size:cover;
+    background-size:contain;
     background-repeat:no-repeat;
+    background-position: center;
+
 }
 #app{
     color:blue;

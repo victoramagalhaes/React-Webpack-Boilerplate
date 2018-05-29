@@ -1,6 +1,7 @@
 var config = require("./webpack.config.js");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
     entry: "./src/index.jsx",
@@ -14,7 +15,8 @@ module.exports = {
         inline: true,
         hot:true,
         watchContentBase: true,
-        port:3000
+        port:9000,
+        historyApiFallback: true
     },
     performance: {
         hints: process.env.NODE_ENV === 'production' ? "warning" : false
@@ -26,6 +28,10 @@ module.exports = {
                test: /.js[x]?$/,
                exclude: /node_modules/,
             },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                loader: "file-loader?name=font-[hash:6].[ext]&outputPath=./fonts"
+              },
             {
                 test: /\.(gif|png|jpe?g|svg)/i,
                 use: [
@@ -52,6 +58,13 @@ module.exports = {
                 ]
             },
             {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                  fallback: "style-loader",
+                  use: "css-loader"
+                })
+              },
+            {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract(
                   {
@@ -65,6 +78,7 @@ module.exports = {
         new ExtractTextPlugin(
           {filename: 'app.css'}
         ),
+        new OptimizeCssAssetsPlugin(),
         new HtmlWebpackPlugin({
           inject: false,
           hash: true,
